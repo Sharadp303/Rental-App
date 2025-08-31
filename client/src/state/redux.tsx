@@ -1,16 +1,14 @@
+"use client";
+
+import { useRef } from "react";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
+import { setupListeners } from "@reduxjs/toolkit/query";
 import globalReducer from "@/state";
 import { api } from "@/state/api";
-import {
-  Provider,
-  TypedUseSelectorHook,
-  useDispatch,
-  useSelector,
-} from "react-redux";
-import { useRef } from "react";
-import { setupListeners } from "@reduxjs/toolkit/query";
 
-// Redux Store
+/* REDUX STORE */
 const rootReducer = combineReducers({
   global: globalReducer,
   [api.reducerPath]: api.reducer,
@@ -24,16 +22,14 @@ export const makeStore = () => {
   });
 };
 
-// Redux Types
-
+/* REDUX TYPES */
 export type AppStore = ReturnType<typeof makeStore>;
 export type RootState = ReturnType<AppStore["getState"]>;
 export type AppDispatch = AppStore["dispatch"];
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 
-// Provider
-
+/* PROVIDER */
 export default function StoreProvider({
   children,
 }: {
@@ -44,6 +40,5 @@ export default function StoreProvider({
     storeRef.current = makeStore();
     setupListeners(storeRef.current.dispatch);
   }
-
   return <Provider store={storeRef.current}>{children}</Provider>;
 }
